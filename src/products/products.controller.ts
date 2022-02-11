@@ -6,17 +6,24 @@ import {
   Param,
   ParseIntPipe,
 } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
 
 import { ProductsService } from './products.service';
 import { CreateProductDto } from './dtos/create-product.dto';
 
 @Controller('products')
 export class ProductsController {
-  constructor(private productsService: ProductsService) {}
+  constructor(
+    private productsService: ProductsService,
+    private configService: ConfigService,
+  ) {}
 
   @Get()
   getAll() {
-    return this.productsService.find();
+    return {
+      apiKey: this.configService.get('API_KEY'),
+      products: this.productsService.find(),
+    };
   }
 
   @Get(':productId')
